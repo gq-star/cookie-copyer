@@ -1,0 +1,48 @@
+.config-panel {
+    padding: 8px;
+}
+.config-panel-item {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.item-label {
+    width: 80px;
+}
+
+#dest-url {
+    width: 150px;
+    outline: none;
+    border: 1px solid #cccccc;
+    border-radius: 3px;
+    padding: 5px;
+}
+
+#copy-btn {
+    outline: none;
+    border: none;
+    padding: 5px 8px;
+    margin-left: 16px;
+    cursor: pointer;
+}
+
+
+#copy-btn:hover {
+    background-color: cornflowerblue;
+    color: #fff;
+}
+
+#copy-btn:disabled {
+    background-color: #fff;
+    color: gray;
+    cursor: not-allowed;
+}
+
+.error-tip {
+    display: none;
+    margin-top: 4px;
+    color: tomato;
+    text-align: center;
+}
