@@ -1,5 +1,5 @@
 const path = require('path');
-const { series, parallel, src, dest } = require('gulp');
+const { series, parallel, src, dest, watch } = require('gulp');
 const clean = require('gulp-clean');
 const terser = require('gulp-terser');
 const htmlmin = require('gulp-htmlmin');
@@ -22,7 +22,7 @@ function getInAbsolutePath(path) {
 // copy files which no deal with
 function copy() {
     return src(
-        [getInAbsolutePath(`*.json`), getInAbsolutePath(`./images/**/*`)],
+        [getInAbsolutePath(`*.json`), getInAbsolutePath(`./images/**/*`),  getInAbsolutePath(`./static/images/**/*`)],
         { base: './src' }
     ).pipe(dest(resolve(DIST_PATH, SPEC_DIR)));
 }
@@ -73,5 +73,16 @@ function css() {
         .pipe(dest(DIST_PATH));
 }
 
+// private watch files
+function watchFiles() {
+    return watch(['./src'], build);
+}
+
+var build = series(cleanAll, parallel(html, css, js, copy))
+
 // public build task
-exports.build = series(cleanAll, parallel(html, css, js, copy));
+exports.build = build;
+
+// public watch task
+exports.watch = series(watchFiles);
+

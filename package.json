@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "cookie_copyer",
   "scripts": {
-    "gulp-build": "gulp build"
+    "gulp-build": "gulp build",
+    "gulp-watch": "gulp watch"
   },
   "devDependencies": {
     "gulp": "^4.0.2",

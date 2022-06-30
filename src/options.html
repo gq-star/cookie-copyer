@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
     <link rel="stylesheet" href="options.css">
   </head>
   <body>
-    </div>
-    <div>
+    <div class="instructions-container">
+        <h1>使用说明</h1>
+        <div>把需要拷贝的cookie所在目标网址(如：https://www.baidu.com), 也可以是域名形式（如：baidu.com）, 或者是IP形式（如：10.199.20.84)复制到输入框后，点击Copy按钮，就会把该域名的所有cookie导入到当前操作页面, 如下图：</div>
+        <img src="./static/images/eg.png" alt="">
+        <img src="./static/images/success.png" alt="">
+        <div>有时会出现拷贝某个cookie失败的情况，一般是因为该cookie sameSite为strict或者是设置了secure。出于安全策略，这类cookie目前不可复制</div>
+        <img src="./static/images/failed.png" alt="">
+        <div>F12打开开发者工具，选择Application下的cookie，查看是否已成功注入</div>
+        <img src="./static/images/confirm.png" alt="">
     </div>
   </body>
   <script src="options.js"></script>

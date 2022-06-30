@@ -22,5 +22,6 @@
     "32": "/images/cookie32.png",
     "48": "/images/cookie48.png",
     "128": "/images/cookie128.png"
-  }
+  },
+  "options_page": "options.html"
 }

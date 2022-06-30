@@ -1,0 +1,24 @@
+body, div, img, h1 {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+.instructions-container {
+    font-size: 23px;
+    padding: 20px 160px;
+}
+
+.instructions-container div {
+    line-height: 36px;
+}
+
+.instructions-container img {
+    display: block;
+    margin: 8px auto;
+}
+
+.instructions-container h1 {
+    text-align: center;
+    margin-bottom: 16px;
+}

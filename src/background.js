@@ -1,3 +1,4 @@
 chrome.runtime.onInstalled.addListener(() => {
-    console.log('The plugin has installed successfully!');
+    console.log('The extension has installed success!')
+    chrome.runtime.openOptionsPage(() => console.log('open options page success.'));
 });
