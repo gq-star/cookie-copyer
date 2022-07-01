@@ -1,12 +1,16 @@
 const copyBtn = document.getElementById('copy-btn');
+const copyUrl = document.getElementById('copy-url');
 const destUrl = document.getElementById('dest-url');
 const errorTip = document.querySelector('.error-tip');
+const clearIcon = document.querySelector('.clear-icon');
 
-const urlReg =
+const STORAGE_KEY = 'copied_url';
+
+const URL_Reg =
     /(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:/~\+#]*[\w\-\@?^=%&amp;/~\+#])?/; // complete url
-const domainReg =
+const DOMAIN_Reg =
     /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/; // domain except ip
-const ipReg =
+const IP_Reg =
     /^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))$/; // match ip address
 
 /**
@@ -17,15 +21,17 @@ destUrl.addEventListener('input', (e) => {
     validateFn(v);
 });
 
-window.onload = function () {
+window.onload = async function () {
+    const data = await getStorage(STORAGE_KEY);
+    destUrl.value = data;
     validateFn(destUrl.value);
 };
 
 function validateFn(v) {
     let errorText = '';
-    if (!v.trim().length) errorText = "target url can't be empty";
-    else if (!urlReg.test(v) && !domainReg.test(v) && !ipReg.test(v))
-        errorText = 'invalid url or domain';
+    if (!v.trim().length) errorText = '域名或链接不得不空';
+    else if (!URL_Reg.test(v) && !DOMAIN_Reg.test(v) && !IP_Reg.test(v))
+        errorText = '无效的域名或链接';
 
     if (errorText) errorTip.innerText = errorText;
     errorTip.style.display = errorText ? 'block' : 'none';
@@ -38,18 +44,47 @@ function validateFn(v) {
  * get legal domain
  */
 function getDomain(v) {
-    if (urlReg.test(v)) return new URL(v).hostname;
-    if (domainReg.test(v) || ipReg.test(v)) return v;
-    throw new Error('invalid domain');
+    if (URL_Reg.test(v)) return new URL(v).hostname;
+    if (DOMAIN_Reg.test(v) || IP_Reg.test(v)) return v;
+    throw new Error('无效域名');
 }
+
+async function getCurrentTab() {
+    const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true
+    });
+    return tab;
+}
+
+function setStorage(key, value) {
+    chrome.storage.sync.set({ [key]: value });
+}
+
+function getStorage(key) {
+    return new Promise((resolve) => {
+        chrome.storage.sync.get(key, function (result) {
+            resolve(result[key] || '');
+        });
+    });
+}
+
+clearIcon.addEventListener('click', () => {
+    destUrl.value = '';
+    setStorage(STORAGE_KEY, destUrl.value);
+});
+
+copyUrl.addEventListener('click', async () => {
+    const tab = await getCurrentTab();
+    destUrl.value = tab.url;
+    setStorage(STORAGE_KEY, destUrl.value);
+    validateFn(destUrl.value);
+});
 
 copyBtn.addEventListener('click', async () => {
     try {
         // get current active page
-        const [tab] = await chrome.tabs.query({
-            active: true,
-            currentWindow: true
-        });
+        const tab = await getCurrentTab();
         chrome.cookies.getAll(
             { domain: getDomain(destUrl.value) },
             (cookies) => {
@@ -71,6 +106,7 @@ copyBtn.addEventListener('click', async () => {
                     .catch((e) => alert(e))
                     .finally(() => {
                         destUrl.value = '';
+                        setStorage(STORAGE_KEY, '');
                     });
             }
         );

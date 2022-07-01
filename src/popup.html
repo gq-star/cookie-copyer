@@ -6,10 +6,14 @@
   </head>
   <body>
     <div class="config-panel">
+        <button id="copy-url">复制当前网页地址</button>
         <div class="config-panel-item-container">
             <div class="config-panel-item">
-                <input id="dest-url" type="text" placeholder="please enter url or domain...">
-                <button id="copy-btn">Copy</button>
+                <div class="input-container">
+                    <input id="dest-url" type="text" placeholder="请输入域名或链接...">
+                    <img class="clear-icon" src="./static/images/delete-filling.png" alt="">
+                </div>
+                <button id="copy-btn">注入到当前页</button>
             </div>
             <div class="error-tip"></div>
         </div>
