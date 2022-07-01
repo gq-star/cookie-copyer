@@ -99,8 +99,9 @@ copyBtn.addEventListener('click', async () => {
                 Promise.all(ps)
                     .then((data) => {
                         alert(
+                            'cookies: ' + 
                             JSON.stringify(data.map((v) => v.name)) +
-                                '\nhad injected current page!'
+                                '\n已成功注入到当前页面!'
                         );
                     })
                     .catch((e) => alert(e))
