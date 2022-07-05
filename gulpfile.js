@@ -1,7 +1,8 @@
 const path = require('path');
 const { series, parallel, src, dest, watch } = require('gulp');
 const clean = require('gulp-clean');
-const terser = require('gulp-terser');
+const uglify = require('gulp-uglify');
+const javascriptObfuscator = require('gulp-javascript-obfuscator');
 const htmlmin = require('gulp-htmlmin');
 const cssmin = require('gulp-minify-css');
 
@@ -22,7 +23,7 @@ function getInAbsolutePath(path) {
 // copy files which no deal with
 function copy() {
     return src(
-        [getInAbsolutePath(`*.json`), getInAbsolutePath(`./images/**/*`),  getInAbsolutePath(`./static/images/**/*`)],
+        [getInAbsolutePath('*.json'), getInAbsolutePath('./images/**/*'),  getInAbsolutePath('./static/images/**/*')],
         { base: './src' }
     ).pipe(dest(resolve(DIST_PATH, SPEC_DIR)));
 }
@@ -59,7 +60,8 @@ function js() {
         getInAbsolutePath('./**/*.js')
         // getOutAbsolutePath(`./${SPEC_DIR}/**/*.js`)
     ])
-        .pipe(terser())
+        .pipe(uglify())
+        .pipe(javascriptObfuscator())
         .pipe(dest(DIST_PATH));
 }
 
@@ -78,11 +80,10 @@ function watchFiles() {
     return watch(['./src'], build);
 }
 
-var build = series(cleanAll, parallel(html, css, js, copy))
+var build = series(cleanAll, parallel(html, css, js, copy));
 
 // public build task
 exports.build = build;
 
 // public watch task
 exports.watch = series(watchFiles);
-
