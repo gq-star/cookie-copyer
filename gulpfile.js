@@ -5,6 +5,7 @@ const uglify = require('gulp-uglify');
 const javascriptObfuscator = require('gulp-javascript-obfuscator');
 const htmlmin = require('gulp-htmlmin');
 const cssmin = require('gulp-minify-css');
+const zip = require('gulp-zip');
 
 const { resolve } = path;
 
@@ -80,7 +81,14 @@ function watchFiles() {
     return watch(['./src'], build);
 }
 
-var build = series(cleanAll, parallel(html, css, js, copy));
+// export zip
+function folderZip() {
+    return src('./dist/**/*')
+        .pipe(zip('cookie_copyer.zip'))
+        .pipe(dest(__dirname));
+}
+
+var build = series(cleanAll, parallel(html, css, js, copy), folderZip);
 
 // public build task
 exports.build = build;
