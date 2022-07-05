@@ -16,6 +16,22 @@
     position: relative;
 }
 
+.clear-icon-wrapper:hover .no-active {
+    display: none;
+}
+
+.clear-icon-wrapper:hover .active {
+    display: block;
+}
+
+.clear-icon-wrapper .no-active {
+    display: block;
+}
+
+.clear-icon-wrapper .active {
+    display: none;
+}
+
 .clear-icon {
     position: absolute;
     top: 4.5px;
@@ -34,8 +50,8 @@
     padding-right: 30px;
 }
 
-
-#copy-btn, #copy-url {
+#copy-btn,
+#copy-url {
     outline: none;
     border: none;
     padding: 5px 8px;
@@ -51,8 +67,6 @@
     background-color: cornflowerblue;
     color: #fff;
 }
-
-
 
 #copy-btn:hover {
     background-color: cornflowerblue;

@@ -2,7 +2,7 @@ const copyBtn = document.getElementById('copy-btn');
 const copyUrl = document.getElementById('copy-url');
 const destUrl = document.getElementById('dest-url');
 const errorTip = document.querySelector('.error-tip');
-const clearIcon = document.querySelector('.clear-icon');
+const clearIcon = document.querySelector('.clear-icon-wrapper');
 
 const STORAGE_KEY = 'copied_url';
 
@@ -12,6 +12,9 @@ const DOMAIN_Reg =
     /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/; // domain except ip
 const IP_Reg =
     /^((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))$/; // match ip address
+
+const LOCAL_URL_Reg =  /(http|https):\/\/localhost/  // match localhost url
+const LOCAL_Reg = /^localhost$/;    // match localhost domain
 
 /**
  * validate error
@@ -29,9 +32,9 @@ window.onload = async function () {
 
 function validateFn(v) {
     let errorText = '';
+    const regs = [URL_Reg, DOMAIN_Reg, IP_Reg, LOCAL_URL_Reg, LOCAL_Reg];
     if (!v.trim().length) errorText = '域名或链接不得不空';
-    else if (!URL_Reg.test(v) && !DOMAIN_Reg.test(v) && !IP_Reg.test(v))
-        errorText = '无效的域名或链接';
+    else if (regs.every(item => !item.test(v))) errorText = '无效的域名或链接';
 
     if (errorText) errorTip.innerText = errorText;
     errorTip.style.display = errorText ? 'block' : 'none';
@@ -44,8 +47,8 @@ function validateFn(v) {
  * get legal domain
  */
 function getDomain(v) {
-    if (URL_Reg.test(v)) return new URL(v).hostname;
-    if (DOMAIN_Reg.test(v) || IP_Reg.test(v)) return v;
+    if (URL_Reg.test(v) || LOCAL_URL_Reg.test(v)) return new URL(v).hostname;
+    if (DOMAIN_Reg.test(v) || IP_Reg.test(v) || LOCAL_Reg.test(v)) return v;
     throw new Error('无效域名');
 }
 
@@ -69,10 +72,16 @@ function getStorage(key) {
     });
 }
 
-clearIcon.addEventListener('click', () => {
+/**
+ * reset logic
+ */
+function resetInput() {
     destUrl.value = '';
     setStorage(STORAGE_KEY, destUrl.value);
-});
+    validateFn(destUrl.value);
+}
+
+clearIcon.addEventListener('click', resetInput);
 
 copyUrl.addEventListener('click', async () => {
     const tab = await getCurrentTab();
@@ -106,8 +115,7 @@ copyBtn.addEventListener('click', async () => {
                     })
                     .catch((e) => alert(e))
                     .finally(() => {
-                        destUrl.value = '';
-                        setStorage(STORAGE_KEY, '');
+                        resetInput();
                     });
             }
         );
